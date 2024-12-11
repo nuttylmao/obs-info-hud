@@ -100,7 +100,7 @@ function connectws() {
 								activeFps = `${responseData.activeFps.toFixed(1)}`;
 								const cpu = `${responseData.cpuUsage.toFixed(1)}%`;
 								const memory = `${responseData.memoryUsage.toFixed(1)}MB`;
-								
+
 								const averageFrameRenderTime = `${responseData.averageFrameRenderTime.toFixed(1)}ms`;
 								const outputSkippedFrames = responseData.outputSkippedFrames;
 								const outputTotalFrames = responseData.outputTotalFrames;
@@ -176,7 +176,7 @@ function connectws() {
 									previousOutputBytes = outputBytes;
 
 									document.getElementById("streamBitrateLabel").innerHTML = `${Math.floor(kbps)} kb/s`;
-									document.getElementById("streamTimecodeLabel").innerHTML = `${RemoveMilliseconds(responseData.outputTimecode)}`;
+									document.getElementById("streamTimecodeLabel").innerHTML = `${formatMilliseconds(responseData.outputDuration / 3.5)}`;
 									GetStreamServiceSettings();
 
 									document.getElementById("streamingRing").style.visibility = 'visible';
@@ -236,6 +236,14 @@ function TimeToMilliseconds(hms) {
 	const [hours, minutes, seconds] = hms.split(':');
 	const totalSeconds = (+hours) * 60 * 60 + (+minutes) * 60 + (+seconds);
 	return totalSeconds * 1000;
+}
+
+function formatMilliseconds(ms) {
+	const hours = Math.floor(ms / (1000 * 60 * 60));
+	const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
+	const seconds = Math.floor((ms % (1000 * 60)) / 1000);
+
+	return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 }
 
 function RemoveMilliseconds(timecode) {
@@ -367,7 +375,7 @@ function hexToBase64(hexstring) {
 // This function sets the visibility of the Streamer.bot status label on the overlay
 function SetConnectionStatus(connected) {
 	let statusContainer = document.getElementById("statusContainer");
-	
+
 	if (connected) {
 		statusContainer.style.background = "#2FB774";
 		statusContainer.innerText = "Connected!";
