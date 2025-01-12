@@ -9,10 +9,15 @@ const obsServerAddress = urlParams.get("address") || "127.0.0.1";
 const obsServerPort = urlParams.get("port") || "4455";
 const obsServerPassword = urlParams.get("password") || "";
 const obsMicInput = urlParams.get("audio") || "";
+const background = urlParams.get("background") || "";
 
 if (obsMicInput != "")
 	document.getElementById("theMotherOfAllVolumeContainers").style.visibility = "visible";
 
+if (background != "")
+{
+	document.body.style.backgroundImage = `url("frames/${background}.png")`
+}
 
 let ws = new WebSocket("ws://" + obsServerAddress + ":" + obsServerPort + "/");
 
@@ -207,6 +212,16 @@ function connectws() {
 							{
 								let responseData = data.d.responseData;
 								document.getElementById("profileLabel").innerHTML = `Profile: ${responseData.currentProfileName}`;
+							}
+							break;
+						case "GetInputMute":
+							{
+								let responseData = data.d.responseData;
+								console.log(responseData);
+								if (responseData.inputMuted)
+									document.getElementById("micMuteIcon").style.visibility = `visible`;
+								else
+									document.getElementById("micMuteIcon").style.visibility = `hidden`;
 							}
 							break;
 					}
@@ -446,6 +461,24 @@ function GetRecordStatus() {
 	}
 	obswsSendRequest(ws, data);
 }
+
+
+if (obsMicInput != "")
+{
+	setInterval(GetInputMute, 500);
+	function GetInputMute() {
+		let data =
+		{
+			"requestType": "GetInputMute",
+			"requestId": CreateGuid(),
+			"requestData": {
+				"inputName": obsMicInput
+			}
+		}
+		obswsSendRequest(ws, data);
+	}
+}
+
 
 function GetVideoSettings() {
 	let data =

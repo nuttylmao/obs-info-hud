@@ -2,6 +2,10 @@
 	--background: RGB(0, 0, 0, 0.75);
 }
 
+body {
+    background-size: cover;
+}
+
 #statusContainer {
 	font-family: 'Metropolis';
 	font-style: italic;
@@ -224,6 +228,16 @@
 	transform: translate(-50%, 100%);
 	text-align: center;
 	background-color: var(--background);
+}
+
+#micMuteIcon {
+	visibility: hidden;
+	height: 50%;
+	position: absolute;
+	bottom: 50%;
+	left: 50%;
+	transform: translate(-50%, 50%);
+	opacity: 50%;
 }
 
 .barLabel {
